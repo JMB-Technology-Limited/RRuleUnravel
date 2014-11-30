@@ -23,6 +23,8 @@ class Unraveler {
 
 	protected $timezone;
 
+	protected $results;
+
 	function __construct(RRule $rrule, \DateTime $start, \DateTime $end, $timezone='UTC')
 	{
 		$this->rruleUnraveling = new RRuleUnraveling($rrule);
@@ -35,11 +37,44 @@ class Unraveler {
 	public function process()
 	{
 
+		$this->results = array();
+
+		$start = clone $this->start;
+		$end = clone $this->end;
+
+		$intervalString = "";
+		if ($this->rruleUnraveling->getRrule()->getFreq() == "WEEKLY")
+		{
+			$intervalString = "P7D";
+		}
+
+
+		if ($intervalString)
+		{
+			$interval = new \DateInterval($intervalString);
+
+			$process = true;
+
+			while($process) {
+
+				$start->add($interval);
+				$end->add($interval);
+
+				$this->results[] = new UnravelerResult(clone $start, clone $end);
+
+
+				$process = (count($this->results) < 100);
+
+			}
+
+
+		}
+
 	}
 
 	public function getResults()
 	{
-
+		return $this->results;
 	}
 
 }
