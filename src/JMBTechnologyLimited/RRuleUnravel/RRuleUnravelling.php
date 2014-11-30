@@ -10,7 +10,7 @@ namespace JMBTechnologyLimited\RRuleUnravel;
  * @author James Baster <james@jarofgreen.co.uk>
  */
 
-class RRuleUnraveling {
+class RRuleUnravelling {
 
 	/** @var  RRule */
 	protected $rrule;

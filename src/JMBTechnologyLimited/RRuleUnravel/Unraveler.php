@@ -12,8 +12,8 @@ namespace JMBTechnologyLimited\RRuleUnravel;
 
 class Unraveler {
 
-	/** @var  RRuleUnraveling */
-	protected $rruleUnraveling;
+	/** @var  RRuleUnravelling */
+	protected $rruleUnravelling;
 
 	/** @var  \DateTime */
 	protected $start;
@@ -27,7 +27,7 @@ class Unraveler {
 
 	function __construct(RRule $rrule, \DateTime $start, \DateTime $end, $timezone='UTC')
 	{
-		$this->rruleUnraveling = new RRuleUnraveling($rrule);
+		$this->rruleUnravelling = new RRuleUnravelling($rrule);
 		$this->start = $start;
 		$this->end = $end;
 		$this->timezone = $timezone;
@@ -43,7 +43,7 @@ class Unraveler {
 		$end = clone $this->end;
 
 		$intervalString = "";
-		if ($this->rruleUnraveling->getRrule()->getFreq() == "WEEKLY")
+		if ($this->rruleUnravelling->getRrule()->getFreq() == "WEEKLY")
 		{
 			$intervalString = "P7D";
 		}
