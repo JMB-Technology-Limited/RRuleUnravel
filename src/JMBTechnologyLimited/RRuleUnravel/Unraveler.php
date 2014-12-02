@@ -40,7 +40,13 @@ class Unraveler {
 		$this->results = array();
 
 		$start = clone $this->start;
+		if ($start->getTimezone()->getName() != $this->timezone) {
+			$start->setTimezone(new \DateTimeZone($this->timezone));
+		}
 		$end = clone $this->end;
+		if ($end->getTimezone()->getName() != $this->timezone) {
+			$end->setTimezone(new \DateTimeZone($this->timezone));
+		}
 
 		$intervalString = "";
 		if ($this->rruleUnravelling->getRrule()->getFreq() == "WEEKLY")

@@ -12,11 +12,21 @@ namespace JMBTechnologyLimited\RRuleUnravel;
  */
 class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
+	/**
+	 * Whether we pass in or out in the local or UTC timezone should not matter, so let's test that
+	 */
+	function providerTest1() {
+		return array(
+			array(new \DateTime("2014-10-01 09:00:00", new \DateTimeZone("Europe/London")), new \DateTime("2014-10-01 17:00:00", new \DateTimeZone("Europe/London"))),
+			array(new \DateTime("2014-10-01 08:00:00", new \DateTimeZone("UTC")), new \DateTime("2014-10-01 17:00:00", new \DateTimeZone("Europe/London"))),
+			array(new \DateTime("2014-10-01 08:00:00", new \DateTimeZone("UTC")), new \DateTime("2014-10-01 16:00:00", new \DateTimeZone("UTC"))),
+		);
+	}
 
-	function test1set() {
-		$timezone = new \DateTimeZone("Europe/London");
+	/** @dataProvider providerTest1 */
+	function test1($in, $out) {
 		$rrule = new RRule("FREQ=WEEKLY");
-		$unraveler = new Unraveler($rrule, new \DateTime("2014-10-01 09:00:00", $timezone), new \DateTime("2014-10-01 17:00:00", $timezone), "Europe/London");
+		$unraveler = new Unraveler($rrule, $in, $out, "Europe/London");
 		$unraveler->process();
 		$results = $unraveler->getResults();
 
