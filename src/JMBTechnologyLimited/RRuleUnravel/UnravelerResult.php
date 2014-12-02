@@ -26,8 +26,20 @@ class UnravelerResult {
 		return $this->start;
 	}
 
+	public function getStartInUTC() {
+		$startUTC = clone $this->start;
+		$startUTC->setTimezone(new \DateTimeZone('UTC'));
+		return $startUTC;
+	}
+
 	public function getEnd() {
 		return $this->end;
+	}
+
+	public function getEndInUTC() {
+		$endUTC = clone $this->end;
+		$endUTC->setTimezone(new \DateTimeZone('UTC'));
+		return $endUTC;
 	}
 
 }
