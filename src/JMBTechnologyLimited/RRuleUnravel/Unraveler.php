@@ -23,6 +23,8 @@ class Unraveler {
 
 	protected $timezone;
 
+	protected $includeOriginalEvent = true;
+
 	protected $results;
 
 	function __construct(RRule $rrule, \DateTime $start, \DateTime $end, $timezone='UTC')
@@ -52,6 +54,10 @@ class Unraveler {
 		if ($this->rruleUnravelling->getRrule()->getFreq() == "WEEKLY")
 		{
 			$intervalString = "P7D";
+		}
+
+		if ($this->includeOriginalEvent) {
+			$this->results[] = new UnravelerResult(clone $start, clone $end);
 		}
 
 
@@ -92,6 +98,24 @@ class Unraveler {
 		}
 
 	}
+
+	/**
+	 * @param boolean $includeOriginalEvent
+	 */
+	public function setIncludeOriginalEvent($includeOriginalEvent)
+	{
+		$this->includeOriginalEvent = $includeOriginalEvent;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getIncludeOriginalEvent()
+	{
+		return $this->includeOriginalEvent;
+	}
+
+
 
 	public function getResults()
 	{
