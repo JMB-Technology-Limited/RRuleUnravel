@@ -66,10 +66,25 @@ class Unraveler {
 				$start->add($interval);
 				$end->add($interval);
 
-				$this->results[] = new UnravelerResult(clone $start, clone $end);
+				$add = true;
+				if (!$this->rruleUnravelling->isCountLeft()) {
+					$add = false;
+					// can also stop processing now
+					$process = false;
+				}
 
+				if ($add)
+				{
+					$this->results[] = new UnravelerResult(clone $start, clone $end);
+					$this->rruleUnravelling->decreaseCount();
+				}
 
-				$process = (count($this->results) < 100);
+				// This is a temporary stop for rules with no count, so they stop sometime.
+				// Need to do better!
+				if (count($this->results) > 100)
+				{
+					$process = false;
+				}
 
 			}
 
@@ -84,3 +99,5 @@ class Unraveler {
 	}
 
 }
+
+

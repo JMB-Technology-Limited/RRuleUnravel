@@ -12,12 +12,19 @@ namespace JMBTechnologyLimited\RRuleUnravel;
 
 class RRuleUnravelling {
 
+
+
+	/** @var  integer */
+	protected $count = -1;
+
+
 	/** @var  RRule */
 	protected $rrule;
 
-	function __construct($rrule)
+	function __construct(RRule $rrule)
 	{
 		$this->rrule = $rrule;
+		$this->count = $rrule->getCount();
 	}
 
 	/**
@@ -28,6 +35,22 @@ class RRuleUnravelling {
 		return $this->rrule;
 	}
 
+	/**
+	 * @return boolean
+	 */
+	public function isCountLeft()
+	{
+		// -1 indicates infinite and should return true
+		return $this->count != 0;
+	}
+
+	public function decreaseCount()
+	{
+		if ($this->count > 0)
+		{
+			$this->count--;
+		}
+	}
 
 
 

@@ -61,6 +61,35 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
 	}
 
+	/** @dataProvider providerTest1 */
+	function test1withCount($in, $out) {
+		$rrule = new RRule("FREQ=WEEKLY;COUNT=5");
+		$unraveler = new Unraveler($rrule, $in, $out, "Europe/London");
+		$unraveler->process();
+		$results = $unraveler->getResults();
+
+		$this->assertTrue(count($results) == 5);
+
+		$this->assertEquals("2014-10-08T09:00:00+01:00", $results[0]->getStart()->format("c"));
+		$this->assertEquals("2014-10-08T17:00:00+01:00", $results[0]->getEnd()->format("c"));
+
+		$this->assertEquals("2014-10-08T08:00:00+00:00", $results[0]->getStartInUTC()->format("c"));
+		$this->assertEquals("2014-10-08T16:00:00+00:00", $results[0]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2014-10-15T09:00:00+01:00", $results[1]->getStart()->format("c"));
+		$this->assertEquals("2014-10-15T17:00:00+01:00", $results[1]->getEnd()->format("c"));
+
+		$this->assertEquals("2014-10-15T08:00:00+00:00", $results[1]->getStartInUTC()->format("c"));
+		$this->assertEquals("2014-10-15T16:00:00+00:00", $results[1]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2014-10-22T09:00:00+01:00", $results[2]->getStart()->format("c"));
+		$this->assertEquals("2014-10-22T17:00:00+01:00", $results[2]->getEnd()->format("c"));
+
+		$this->assertEquals("2014-10-22T08:00:00+00:00", $results[2]->getStartInUTC()->format("c"));
+		$this->assertEquals("2014-10-22T16:00:00+00:00", $results[2]->getEndInUTC()->format("c"));
+
+	}
+
 
 }
 

@@ -17,6 +17,9 @@ class RRule {
 
 	protected $byday;
 
+	/** @var  integer */
+	protected $count = -1;
+
 	function __construct($data = null)
 	{
 		if ($data && is_array($data))
@@ -50,6 +53,10 @@ class RRule {
 			else if ($key == 'BYDAY')
 			{
 				$this->byday = $value;
+			}
+			else if ($key == 'COUNT')
+			{
+				$this->count = $value;
 			}
 		}
 
@@ -87,7 +94,25 @@ class RRule {
 		return $this->freq;
 	}
 
+	/**
+	 * @param int $count
+	 */
+	public function setCount($count)
+	{
+		$this->count = $count;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCount()
+	{
+		return $this->count;
+	}
+
 
 
 
 }
+
+
