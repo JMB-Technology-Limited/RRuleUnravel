@@ -88,6 +88,13 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals("2014-10-22T08:00:00+00:00", $results[2]->getStartInUTC()->format("c"));
 		$this->assertEquals("2014-10-22T16:00:00+00:00", $results[2]->getEndInUTC()->format("c"));
 
+		// at this point the BST change happens
+
+		$this->assertEquals("2014-10-29T09:00:00+00:00", $results[3]->getStart()->format("c"));
+		$this->assertEquals("2014-10-29T17:00:00+00:00", $results[3]->getEnd()->format("c"));
+
+		$this->assertEquals("2014-10-29T09:00:00+00:00", $results[3]->getStartInUTC()->format("c"));
+		$this->assertEquals("2014-10-29T17:00:00+00:00", $results[3]->getEndInUTC()->format("c"));
 	}
 
 
