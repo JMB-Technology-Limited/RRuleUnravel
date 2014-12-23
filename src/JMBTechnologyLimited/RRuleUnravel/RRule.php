@@ -17,8 +17,41 @@ class RRule {
 
 	protected $byday;
 
+
+	/** @var bool */
+	protected $byDayMon = false;
+	/** @var int */
+	protected $byDayMonNumber = 0;
+	/** @var bool */
+	protected $byDayTue = false;
+	/** @var int */
+	protected $byDayTueNumber = 0;
+	/** @var bool */
+	protected $byDayWed = false;
+	/** @var int */
+	protected $byDayWedNumber = 0;
+	/** @var bool */
+	protected $byDayThu = false;
+	/** @var int */
+	protected $byDayThuNumber = 0;
+	/** @var bool */
+	protected $byDayFri = false;
+	/** @var int */
+	protected $byDayFriNumber = 0;
+	/** @var bool */
+	protected $byDaySat = false;
+	/** @var int */
+	protected $byDaySatNumber = 0;
+	/** @var bool */
+	protected $byDaySun = false;
+	/** @var int */
+	protected $byDaySunNumber = 0;
+
 	/** @var  integer */
 	protected $count = -1;
+
+	protected $bymonthday;
+
 
 	function __construct($data = null)
 	{
@@ -53,10 +86,40 @@ class RRule {
 			else if ($key == 'BYDAY')
 			{
 				$this->byday = $value;
+				foreach(explode(",",$value) as $bit) {
+					$day = substr(trim($bit), -2);
+					$number = strlen(trim($bit)) > 2 ? intval( substr(trim($bit), 0 , -2)) : 0;
+					if ($day == "MO") {
+						$this->byDayMon = true;
+						$this->byDayMonNumber = $number;
+					} else if ($day == "TU") {
+						$this->byDayTue = true;
+						$this->byDayTueNumber = $number;
+					} else if ($day == "WE") {
+						$this->byDayWed = true;
+						$this->byDayWedNumber = $number;
+					} else if ($day == "TH") {
+						$this->byDayThu = true;
+						$this->byDayThuNumber = $number;
+					} else if ($day == "FR") {
+						$this->byDayFri = true;
+						$this->byDayFriNumber = $number;
+					} else if ($day == "SA") {
+						$this->byDaySat = true;
+						$this->byDaySatNumber = $number;
+					} else if ($day == "SU") {
+						$this->byDaySun = true;
+						$this->byDaySunNumber = $number;
+					}
+				}
 			}
 			else if ($key == 'COUNT')
 			{
 				$this->count = $value;
+			}
+			else if ($key == 'BYMONTHDAY')
+			{
+				$this->bymonthday = $value;
 			}
 		}
 
@@ -77,6 +140,131 @@ class RRule {
 	{
 		return $this->byday;
 	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isSetByday()
+	{
+		return (boolean)$this->byday;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isByDayFri()
+	{
+		return $this->byDayFri;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getByDayFriNumber()
+	{
+		return $this->byDayFriNumber;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isByDayMon()
+	{
+		return $this->byDayMon;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getByDayMonNumber()
+	{
+		return $this->byDayMonNumber;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isByDaySat()
+	{
+		return $this->byDaySat;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getByDaySatNumber()
+	{
+		return $this->byDaySatNumber;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isByDaySun()
+	{
+		return $this->byDaySun;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getByDaySunNumber()
+	{
+		return $this->byDaySunNumber;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isByDayThu()
+	{
+		return $this->byDayThu;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getByDayThuNumber()
+	{
+		return $this->byDayThuNumber;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isByDayTue()
+	{
+		return $this->byDayTue;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getByDayTueNumber()
+	{
+		return $this->byDayTueNumber;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isByDayWed()
+	{
+		return $this->byDayWed;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getByDayWedNumber()
+	{
+		return $this->byDayWedNumber;
+	}
+
+
+
+
+
 
 	/**
 	 * @param mixed $freq
@@ -110,6 +298,29 @@ class RRule {
 		return $this->count;
 	}
 
+	/**
+	 * @param mixed $bymonthday
+	 */
+	public function setBymonthday($bymonthday)
+	{
+		$this->bymonthday = $bymonthday;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getBymonthday()
+	{
+		return $this->bymonthday;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isSetBymonthday()
+	{
+		return (boolean)$this->bymonthday;
+	}
 
 
 

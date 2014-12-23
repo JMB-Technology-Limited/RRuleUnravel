@@ -1,6 +1,8 @@
 <?php
 
 namespace JMBTechnologyLimited\RRuleUnravel;
+use JMBTechnologyLimited\RRuleUnravel\internal\MonthCalendarForDaysOfWeek;
+
 
 /**
  *
@@ -41,63 +43,183 @@ class Unraveler {
 
 		$this->results = array();
 
+
+
+
+		if ($this->rruleUnravelling->getRrule()->getFreq() == "WEEKLY")
+		{
+			$this->stepBySimplePeriod("P7D");
+		}
+		else if ($this->rruleUnravelling->getRrule()->getFreq() == "MONTHLY" && $this->rruleUnravelling->getRrule()->isSetBymonthday())
+		{
+			$this->stepBySimplePeriod("P1M");
+		}
+		else if ($this->rruleUnravelling->getRrule()->getFreq() == "MONTHLY" && $this->rruleUnravelling->getRrule()->isSetByday())
+		{
+			$this->stepByDayMonthlyPeriod();
+		}
+
+	}
+
+	protected function stepBySimplePeriod($intervalString) {
+		$interval = new \DateInterval($intervalString);
+
 		$start = clone $this->start;
 		if ($start->getTimezone()->getName() != $this->timezone) {
 			$start->setTimezone(new \DateTimeZone($this->timezone));
 		}
+
 		$end = clone $this->end;
 		if ($end->getTimezone()->getName() != $this->timezone) {
 			$end->setTimezone(new \DateTimeZone($this->timezone));
-		}
-
-		$intervalString = "";
-		if ($this->rruleUnravelling->getRrule()->getFreq() == "WEEKLY")
-		{
-			$intervalString = "P7D";
 		}
 
 		if ($this->includeOriginalEvent) {
 			$this->results[] = new UnravelerResult(clone $start, clone $end);
 		}
 
+		$process = true;
 
-		if ($intervalString)
-		{
-			$interval = new \DateInterval($intervalString);
+		while($process) {
 
-			$process = true;
+			$start->add($interval);
+			$end->add($interval);
 
-			while($process) {
+			$add = true;
+			if (!$this->rruleUnravelling->isCountLeft()) {
+				$add = false;
+				// can also stop processing now
+				$process = false;
+			}
 
-				$start->add($interval);
-				$end->add($interval);
+			if ($add)
+			{
+				$this->results[] = new UnravelerResult(clone $start, clone $end);
+				$this->rruleUnravelling->decreaseCount();
+			}
 
-				$add = true;
-				if (!$this->rruleUnravelling->isCountLeft()) {
-					$add = false;
-					// can also stop processing now
-					$process = false;
+			// This is a temporary stop for rules with no count, so they stop sometime.
+			// Need to do better!
+			if (count($this->results) > 100)
+			{
+				$process = false;
+			}
+
+		}
+	}
+
+
+	public function stepByDayMonthlyPeriod() {
+		$interval = new \DateInterval("P1D");
+
+
+		$start = clone $this->start;
+		if ($start->getTimezone()->getName() != $this->timezone) {
+			$start->setTimezone(new \DateTimeZone($this->timezone));
+		}
+
+		$end = clone $this->end;
+		if ($end->getTimezone()->getName() != $this->timezone) {
+			$end->setTimezone(new \DateTimeZone($this->timezone));
+		}
+
+		if ($this->includeOriginalEvent) {
+			$this->results[] = new UnravelerResult(clone $start, clone $end);
+		}
+
+		$process = true;
+		$currentMonth = $start->format('m');
+
+		$monthCalendar = null;
+
+		while($process) {
+
+			$start->add($interval);
+			$end->add($interval);
+
+
+			if ($currentMonth != $start->format('m')) {
+
+				if ($monthCalendar) {
+
+					for ($i = 1; $i <= $monthCalendar->getMaxDay(); $i++) {
+						$add = false;
+
+						if ($monthCalendar->getDay($i) == "Mon") {
+							if ($this->rruleUnravelling->getRrule()->isByDayMon() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayMonNumber())) {
+								$add = true;
+							}
+						} else if ($monthCalendar->getDay($i) == "Tue") {
+							if ($this->rruleUnravelling->getRrule()->isByDayTue() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayTueNumber())) {
+								$add = true;
+							}
+						} else if ($monthCalendar->getDay($i) == "Wed") {
+							if ($this->rruleUnravelling->getRrule()->isByDayWed() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayWedNumber())) {
+								$add = true;
+							}
+						} else if ($monthCalendar->getDay($i) == "Thu") {
+							if ($this->rruleUnravelling->getRrule()->isByDayThu() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayThuNumber())) {
+								$add = true;
+							}
+						} else if ($monthCalendar->getDay($i) == "Fri") {
+							if ($this->rruleUnravelling->getRrule()->isByDayFri() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayFriNumber())) {
+								$add = true;
+							}
+						} else if ($monthCalendar->getDay($i) == "Sat") {
+							if ($this->rruleUnravelling->getRrule()->isByDaySat() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDaySatNumber())) {
+								$add = true;
+							}
+						} else if ($monthCalendar->getDay($i) == "Sun") {
+							if ($this->rruleUnravelling->getRrule()->isByDaySun() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDaySunNumber())) {
+								$add = true;
+							}
+						}
+
+						if ($add && $process) {
+
+							$this->results[] = new UnravelerResult($monthCalendar->getStart($i), $monthCalendar->getEnd($i));
+							$this->rruleUnravelling->decreaseCount();
+
+
+							if (!$this->rruleUnravelling->isCountLeft()) {
+								$add = false;
+								// can also stop processing now
+								$process = false;
+							}
+							// This is a temporary stop for rules with no count, so they stop sometime.
+							// Need to do better!
+							if (count($this->results) > 100)
+							{
+								$process = false;
+							}
+
+						}
+
+					}
+
 				}
 
-				if ($add)
-				{
-					$this->results[] = new UnravelerResult(clone $start, clone $end);
-					$this->rruleUnravelling->decreaseCount();
-				}
+				$monthCalendar = new MonthCalendarForDaysOfWeek();
+				$monthCalendar->setDay($start->format("j"), $start->format("D"), $start, $end);
+				$currentMonth = $start->format('m');
 
-				// This is a temporary stop for rules with no count, so they stop sometime.
-				// Need to do better!
-				if (count($this->results) > 100)
-				{
-					$process = false;
-				}
+			} else {
 
+				if ($monthCalendar) {
+					$monthCalendar->setDay($start->format("j"), $start->format("D"), $start, $end);
+				}
 			}
 
 
 		}
 
+
+
+
 	}
+
+
+
 
 	/**
 	 * @param boolean $includeOriginalEvent
