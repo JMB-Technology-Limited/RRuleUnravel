@@ -1,6 +1,8 @@
 <?php
 
-namespace JMBTechnologyLimited\RRuleUnravel;
+namespace JMBTechnologyLimited\RRuleUnravel\internal;
+
+use JMBTechnologyLimited\RRuleUnravel\RRule;
 
 /**
  *

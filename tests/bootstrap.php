@@ -10,7 +10,7 @@
  */
 
 require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/RRule.php';
-require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/RRuleUnravelling.php';
+require __DIR__ . '/../src/JMBTechnologyLimited/RRuleUnravel/internal/RRuleUnravelling.php';
 require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/Unraveler.php';
 require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/UnravelerResult.php';
 require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/internal/MonthCalendarForDaysOfWeek.php';

@@ -1,7 +1,9 @@
 <?php
 
 namespace JMBTechnologyLimited\RRuleUnravel;
+
 use JMBTechnologyLimited\RRuleUnravel\internal\MonthCalendarForDaysOfWeek;
+use JMBTechnologyLimited\RRuleUnravel\internal\RRuleUnravelling;
 
 
 /**
