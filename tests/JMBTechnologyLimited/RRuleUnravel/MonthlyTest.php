@@ -70,5 +70,38 @@ class MonthlyTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	function testDyDayOfWeek2() {
+		$rrule = new RRule("FREQ=MONTHLY;BYDAY=-1WE");
+		$this->assertTrue($rrule->isSetByday());
+		$this->assertFalse($rrule->isByDayMon());
+		$this->assertFalse($rrule->isByDayTue());
+		$this->assertTrue($rrule->isByDayWed());
+		$this->assertEquals(-1, $rrule->getByDayWedNumber());
+		$this->assertFalse($rrule->isByDayThu());
+		$this->assertFalse($rrule->isByDayFri());
+		$this->assertFalse($rrule->isByDaySat());
+		$this->assertFalse($rrule->isByDaySun());
+		$unraveler = new Unraveler(
+			$rrule,
+			new \DateTime("2014-11-26 08:00:00", new \DateTimeZone("Europe/London")),
+			new \DateTime("2014-11-26 08:00:00", new \DateTimeZone("Europe/London")),
+			"Europe/London");
+		$unraveler->setIncludeOriginalEvent(false);
+		$unraveler->process();
+		$results = $unraveler->getResults();
+
+		$this->assertTrue(count($results) > 2);
+
+
+		$this->assertEquals("2014-12-31T08:00:00+00:00", $results[0]->getStart()->format("c"));
+		$this->assertEquals("2014-12-31T08:00:00+00:00", $results[0]->getEnd()->format("c"));
+
+		$this->assertEquals("2015-01-28T08:00:00+00:00", $results[1]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-01-28T08:00:00+00:00", $results[1]->getEndInUTC()->format("c"));
+
+	}
+
+
+
 
 }

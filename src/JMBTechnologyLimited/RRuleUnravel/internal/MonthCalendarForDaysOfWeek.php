@@ -152,10 +152,13 @@ class MonthCalendarForDaysOfWeek {
 			}
 			return $count == $number;
 		} else {
-
-
-
-			return false;
+			$count = 0;
+			for ($i = 31; $i >= $date; $i--) {
+				if ($this->days[$i] == $this->days[$date]) {
+					--$count;
+				}
+			}
+			return $count == $number;
 		}
 	}
 
