@@ -20,5 +20,8 @@
         "psr-0": {
             "JMBTechnologyLimited": "src"
         }
+    },
+    "require-dev": {
+        "satooshi/php-coveralls": "dev-master"
     }
 }
