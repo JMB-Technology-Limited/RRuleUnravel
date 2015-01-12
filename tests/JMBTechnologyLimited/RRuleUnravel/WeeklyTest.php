@@ -242,6 +242,52 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
 	}
 
+
+
+	function testTwoWeeksPeriodWithOneException() {
+		$icaldata = new ICalData(
+			new \DateTime("2015-02-12 09:00:00", new \DateTimeZone("UTC")),
+			new \DateTime("2015-02-12 10:00:00", new \DateTimeZone("UTC")),
+			"FREQ=WEEKLY;INTERVAL=2;BYDAY=TH",
+			"Europe/London");
+		$icaldata->setExDateByString("20150226T090000","TZID=Europe/London");
+		$unraveler = new Unraveler($icaldata);
+		$unraveler->setIncludeOriginalEvent(false);
+		$unraveler->process();
+		$results = $unraveler->getResults();
+
+		$this->assertTrue(count($results) > 5);
+
+		$this->assertEquals("2015-03-12T09:00:00+00:00", $results[0]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-03-12T10:00:00+00:00", $results[0]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-03-12T09:00:00+00:00", $results[0]->getStart()->format("c"));
+		$this->assertEquals("2015-03-12T10:00:00+00:00", $results[0]->getEnd()->format("c"));
+
+		$this->assertEquals("2015-03-26T09:00:00+00:00", $results[1]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-03-26T10:00:00+00:00", $results[1]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-03-26T09:00:00+00:00", $results[1]->getStart()->format("c"));
+		$this->assertEquals("2015-03-26T10:00:00+00:00", $results[1]->getEnd()->format("c"));
+
+		// BST date shift
+
+		$this->assertEquals("2015-04-09T08:00:00+00:00", $results[2]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-04-09T09:00:00+00:00", $results[2]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-04-09T09:00:00+01:00", $results[2]->getStart()->format("c"));
+		$this->assertEquals("2015-04-09T10:00:00+01:00", $results[2]->getEnd()->format("c"));
+
+
+		$this->assertEquals("2015-04-23T08:00:00+00:00", $results[3]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-04-23T09:00:00+00:00", $results[3]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-04-23T09:00:00+01:00", $results[3]->getStart()->format("c"));
+		$this->assertEquals("2015-04-23T10:00:00+01:00", $results[3]->getEnd()->format("c"));
+
+
+	}
+
 }
 
 

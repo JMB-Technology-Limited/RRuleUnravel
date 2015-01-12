@@ -63,6 +63,7 @@ class ICalData {
 
 	protected $interval = 1;
 
+	protected $excluded = array();
 
 	function __construct(\DateTime $start = null, \DateTime $end = null, $data = null, $timezone = null)
 	{
@@ -143,6 +144,30 @@ class ICalData {
 
 	}
 
+
+	public function setExDateByString($exdtval, $exdtparam = "") {
+
+		$this->excluded = array();
+
+		$timezone = new \DateTimeZone("UTC");
+
+		foreach(explode(";", $exdtparam) as $exdtparamBit) {
+			if (strpos( $exdtparamBit, "=") !== false) {
+				list($k, $v) = explode("=", $exdtparamBit, 2);
+				if ($k == "TZID") {
+					$timezone = new \DateTimeZone($v);
+				}
+			}
+		}
+
+		foreach(explode(",",$exdtval) as $exdtvalBit) {
+			if ($exdtvalBit) {
+				$this->excluded[] = new \DateTime($exdtvalBit, $timezone);
+			}
+		}
+
+	}
+
 	/**
 	 * @param \DateTime $end
 	 */
@@ -194,7 +219,13 @@ class ICalData {
 		return $this->timezone;
 	}
 
-
+	/**
+	 * @return array
+	 */
+	public function getExcluded()
+	{
+		return $this->excluded;
+	}
 
 	/**
 	 * @return mixed

@@ -85,7 +85,7 @@ class Unraveler {
 
 			if ($add)
 			{
-				$this->results[] = new UnravelerResult(clone $start, clone $end);
+				$this->addResult($start, $end);
 				$this->icalDataUnravelling->decreaseCount();
 			}
 
@@ -115,7 +115,7 @@ class Unraveler {
 		}
 
 		if ($this->includeOriginalEvent) {
-			$this->results[] = new UnravelerResult(clone $start, clone $end);
+			$this->addResult($start, $end);
 		}
 
 		$process = true;
@@ -168,7 +168,7 @@ class Unraveler {
 
 						if ($add && $process) {
 
-							$this->results[] = new UnravelerResult($monthCalendar->getStart($i), $monthCalendar->getEnd($i));
+							$this->addResult($monthCalendar->getStart($i), $monthCalendar->getEnd($i));
 							$this->icalDataUnravelling->decreaseCount();
 
 
@@ -209,8 +209,18 @@ class Unraveler {
 
 	}
 
-
-
+	protected function  addResult(\DateTime $start, \DateTime $end) {
+		foreach($this->icalDataUnravelling->getICalData()->getExcluded() as $excluded) {
+			if ($start->getTimezone()->getName() != $excluded->getTimezone()->getName()) {
+				// TODOD
+			} else {
+				if ($excluded->format("c") == $start->format("c")) {
+					return;
+				}
+			}
+		}
+		$this->results[] = new UnravelerResult(clone $start, clone $end);
+	}
 
 	/**
 	 * @param boolean $includeOriginalEvent
