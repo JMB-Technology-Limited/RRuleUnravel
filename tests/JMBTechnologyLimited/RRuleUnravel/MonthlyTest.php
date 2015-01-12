@@ -14,13 +14,13 @@ class MonthlyTest extends \PHPUnit_Framework_TestCase {
 
 
 	function testDyDate1() {
-		$rrule = new RRule("FREQ=MONTHLY;BYMONTHDAY=19");
-		$this->assertTrue($rrule->isSetBymonthday());
-		$unraveler = new Unraveler(
-			$rrule,
+		$icalData = new ICalData(
 			new \DateTime("2014-11-19 08:00:00", new \DateTimeZone("Europe/London")),
 			new \DateTime("2014-11-19 08:00:00", new \DateTimeZone("Europe/London")),
-			"Europe/London");
+			"FREQ=MONTHLY;BYMONTHDAY=19",
+				new \DateTimeZone("Europe/London"));
+		$this->assertTrue($icalData->isSetBymonthday());
+		$unraveler = new Unraveler($icalData);
 		$unraveler->setIncludeOriginalEvent(false);
 		$unraveler->process();
 		$results = $unraveler->getResults();
@@ -39,21 +39,21 @@ class MonthlyTest extends \PHPUnit_Framework_TestCase {
 
 
 	function testDyDayOfWeek1() {
-		$rrule = new RRule("FREQ=MONTHLY;BYDAY=3WE");
-		$this->assertTrue($rrule->isSetByday());
-		$this->assertFalse($rrule->isByDayMon());
-		$this->assertFalse($rrule->isByDayTue());
-		$this->assertTrue($rrule->isByDayWed());
-		$this->assertEquals(3, $rrule->getByDayWedNumber());
-		$this->assertFalse($rrule->isByDayThu());
-		$this->assertFalse($rrule->isByDayFri());
-		$this->assertFalse($rrule->isByDaySat());
-		$this->assertFalse($rrule->isByDaySun());
-		$unraveler = new Unraveler(
-			$rrule,
+		$icalData = new ICalData(
 			new \DateTime("2014-11-19 08:00:00", new \DateTimeZone("Europe/London")),
 			new \DateTime("2014-11-19 08:00:00", new \DateTimeZone("Europe/London")),
+			"FREQ=MONTHLY;BYDAY=3WE",
 			"Europe/London");
+		$this->assertTrue($icalData->isSetByday());
+		$this->assertFalse($icalData->isByDayMon());
+		$this->assertFalse($icalData->isByDayTue());
+		$this->assertTrue($icalData->isByDayWed());
+		$this->assertEquals(3, $icalData->getByDayWedNumber());
+		$this->assertFalse($icalData->isByDayThu());
+		$this->assertFalse($icalData->isByDayFri());
+		$this->assertFalse($icalData->isByDaySat());
+		$this->assertFalse($icalData->isByDaySun());
+		$unraveler = new Unraveler($icalData);
 		$unraveler->setIncludeOriginalEvent(false);
 		$unraveler->process();
 		$results = $unraveler->getResults();
@@ -71,21 +71,21 @@ class MonthlyTest extends \PHPUnit_Framework_TestCase {
 
 
 	function testDyDayOfWeek2() {
-		$rrule = new RRule("FREQ=MONTHLY;BYDAY=-1WE");
-		$this->assertTrue($rrule->isSetByday());
-		$this->assertFalse($rrule->isByDayMon());
-		$this->assertFalse($rrule->isByDayTue());
-		$this->assertTrue($rrule->isByDayWed());
-		$this->assertEquals(-1, $rrule->getByDayWedNumber());
-		$this->assertFalse($rrule->isByDayThu());
-		$this->assertFalse($rrule->isByDayFri());
-		$this->assertFalse($rrule->isByDaySat());
-		$this->assertFalse($rrule->isByDaySun());
-		$unraveler = new Unraveler(
-			$rrule,
+		$icalData = new ICalData(
 			new \DateTime("2014-11-26 08:00:00", new \DateTimeZone("Europe/London")),
 			new \DateTime("2014-11-26 08:00:00", new \DateTimeZone("Europe/London")),
+			"FREQ=MONTHLY;BYDAY=-1WE",
 			"Europe/London");
+		$this->assertTrue($icalData->isSetByday());
+		$this->assertFalse($icalData->isByDayMon());
+		$this->assertFalse($icalData->isByDayTue());
+		$this->assertTrue($icalData->isByDayWed());
+		$this->assertEquals(-1, $icalData->getByDayWedNumber());
+		$this->assertFalse($icalData->isByDayThu());
+		$this->assertFalse($icalData->isByDayFri());
+		$this->assertFalse($icalData->isByDaySat());
+		$this->assertFalse($icalData->isByDaySun());
+		$unraveler = new Unraveler($icalData);
 		$unraveler->setIncludeOriginalEvent(false);
 		$unraveler->process();
 		$results = $unraveler->getResults();

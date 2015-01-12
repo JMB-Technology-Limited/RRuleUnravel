@@ -22,19 +22,19 @@ class RRuleSetByArrayTest extends \PHPUnit_Framework_TestCase {
 
 	/** @dataProvider providerTest1 */
 	function test1set($in, $freq, $byday, $count) {
-		$rrule = new RRule();
-		$rrule->setByArray($in);
-		$this->assertEquals($freq, $rrule->getFreq());
-		$this->assertEquals($byday, $rrule->getByday());
-		$this->assertEquals($count, $rrule->getCount());
+		$icaldata = new ICalData();
+		$icaldata->setRRuleByArray($in);
+		$this->assertEquals($freq, $icaldata->getFreq());
+		$this->assertEquals($byday, $icaldata->getByday());
+		$this->assertEquals($count, $icaldata->getCount());
 	}
 
 	/** @dataProvider providerTest1 */
 	function test1construct($in, $freq, $byday, $count) {
-		$rrule = new RRule($in);
-		$this->assertEquals($freq, $rrule->getFreq());
-		$this->assertEquals($byday, $rrule->getByday());
-		$this->assertEquals($count, $rrule->getCount());
+		$icaldata = new ICalData(null, null, $in);
+		$this->assertEquals($freq, $icaldata->getFreq());
+		$this->assertEquals($byday, $icaldata->getByday());
+		$this->assertEquals($count, $icaldata->getCount());
 	}
 
 }

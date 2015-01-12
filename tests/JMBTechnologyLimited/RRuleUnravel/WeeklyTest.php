@@ -25,8 +25,8 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
 	/** @dataProvider providerTest1 */
 	function test1($in, $out) {
-		$rrule = new RRule("FREQ=WEEKLY");
-		$unraveler = new Unraveler($rrule, $in, $out, "Europe/London");
+		$icaldata = new ICalData($in, $out, "FREQ=WEEKLY", "Europe/London");
+		$unraveler = new Unraveler($icaldata);
 		$unraveler->setIncludeOriginalEvent(false);
 		$unraveler->process();
 		$results = $unraveler->getResults();
@@ -64,8 +64,8 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
 	/** @dataProvider providerTest1 */
 	function test1withCount($in, $out) {
-		$rrule = new RRule("FREQ=WEEKLY;COUNT=5");
-		$unraveler = new Unraveler($rrule, $in, $out, "Europe/London");
+		$icaldata = new ICalData($in, $out, "FREQ=WEEKLY;COUNT=5",  "Europe/London");
+		$unraveler = new Unraveler($icaldata);
 		$unraveler->setIncludeOriginalEvent(false);
 		$unraveler->process();
 		$results = $unraveler->getResults();
@@ -101,8 +101,8 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
 	/** @dataProvider providerTest1 */
 	function test1withOriginalEvent($in, $out) {
-		$rrule = new RRule("FREQ=WEEKLY");
-		$unraveler = new Unraveler($rrule, $in, $out, "Europe/London");
+		$icaldata = new ICalData($in, $out,"FREQ=WEEKLY",  "Europe/London");
+		$unraveler = new Unraveler($icaldata);
 		$unraveler->setIncludeOriginalEvent(true);
 		$unraveler->process();
 		$results = $unraveler->getResults();
@@ -146,8 +146,8 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
 	/** @dataProvider providerTest1 */
 	function test1withCountAndOriginalEvent($in, $out) {
-		$rrule = new RRule("FREQ=WEEKLY;COUNT=5");
-		$unraveler = new Unraveler($rrule, $in, $out, "Europe/London");
+		$icaldata = new ICalData($in, $out, "FREQ=WEEKLY;COUNT=5", "Europe/London");
+		$unraveler = new Unraveler($icaldata);
 		$unraveler->setIncludeOriginalEvent(true);
 		$unraveler->process();
 		$results = $unraveler->getResults();
@@ -193,10 +193,12 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 	 * Sometimes they put in the BYDAY, sometimes they don't. No idea why,
 	 */
 	function testTwoWeeksPeriod() {
-		$rrule = new RRule("FREQ=WEEKLY;INTERVAL=2;BYDAY=TH");
-		$unraveler = new Unraveler($rrule,
+		$icaldata = new ICalData(
 			new \DateTime("2015-02-12 09:00:00", new \DateTimeZone("UTC")),
-			new \DateTime("2015-02-12 10:00:00", new \DateTimeZone("UTC")), "Europe/London");
+			new \DateTime("2015-02-12 10:00:00", new \DateTimeZone("UTC")),
+			"FREQ=WEEKLY;INTERVAL=2;BYDAY=TH",
+			"Europe/London");
+		$unraveler = new Unraveler($icaldata);
 		$unraveler->setIncludeOriginalEvent(false);
 		$unraveler->process();
 		$results = $unraveler->getResults();

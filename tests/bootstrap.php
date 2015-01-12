@@ -9,8 +9,8 @@
  * @author James Baster <james@jarofgreen.co.uk>
  */
 
-require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/RRule.php';
-require __DIR__ . '/../src/JMBTechnologyLimited/RRuleUnravel/internal/RRuleUnravelling.php';
+require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/ICalData.php';
+require __DIR__ . '/../src/JMBTechnologyLimited/RRuleUnravel/internal/ICalDataUnravelling.php';
 require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/Unraveler.php';
 require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/UnravelerResult.php';
 require __DIR__.'/../src/JMBTechnologyLimited/RRuleUnravel/internal/MonthCalendarForDaysOfWeek.php';

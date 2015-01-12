@@ -2,6 +2,8 @@
 
 namespace JMBTechnologyLimited\RRuleUnravel;
 
+
+
 /**
  *
  * @link https://github.com/JMB-Technology-Limited/RRuleUnravel
@@ -10,13 +12,20 @@ namespace JMBTechnologyLimited\RRuleUnravel;
  * @author James Baster <james@jarofgreen.co.uk>
  */
 
-class RRule {
+class ICalData {
 
+	/** @var  \DateTime */
+	protected $start;
+
+	/** @var  \DateTime */
+	protected $end;
+
+	/** @var  \DateTimeZone */
+	protected $timezone;
 
 	protected $freq;
 
 	protected $byday;
-
 
 	/** @var bool */
 	protected $byDayMon = false;
@@ -55,29 +64,32 @@ class RRule {
 	protected $interval = 1;
 
 
-	function __construct($data = null)
+	function __construct(\DateTime $start = null, \DateTime $end = null, $data = null, $timezone = null)
 	{
+		$this->start = $start;
+		$this->end = $end;
+		$this->timezone = is_string($timezone) ? new \DateTimeZone($timezone) : $timezone;
 		if ($data && is_array($data))
 		{
-			$this->setByArray($data);
+			$this->setRRuleByArray($data);
 		}
 		else if ($data && is_string($data))
 		{
-			$this->setByString($data);
+			$this->setRRuleByString($data);
 		}
 	}
 
-	function setByString($data)
+	function setRRuleByString($data)
 	{
 		$array = array();
 		foreach(explode(";", $data) as $keyAndValue) {
 			list($key, $value) = explode("=", $keyAndValue,2);
 			$array[$key] = $value;
 		}
-		$this->setByArray($array);
+		$this->setRRuleByArray($array);
 	}
 
-	function setByArray($data)
+	function setRRuleByArray($data)
 	{
 		foreach($data as $key=>$value)
 		{
@@ -132,12 +144,57 @@ class RRule {
 	}
 
 	/**
-	 * @param mixed $byday
+	 * @param \DateTime $end
 	 */
-	public function setByday($byday)
+	public function setEnd($end)
 	{
-		$this->byday = $byday;
+		$this->end = $end;
 	}
+
+	/**
+	 * @param \DateTime $start
+	 */
+	public function setStart($start)
+	{
+		$this->start = $start;
+	}
+
+	/**
+	 * @param \DateTimeZone $timezone
+	 */
+	public function setTimezone($timezone)
+	{
+		$this->timezone = is_string($timezone) ? new \DateTimeZone($timezone) : $timezone;
+	}
+
+
+
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getEnd()
+	{
+		return $this->end;
+	}
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getStart()
+	{
+		return $this->start;
+	}
+
+	/**
+	 * @return null
+	 */
+	public function getTimezone()
+	{
+		return $this->timezone;
+	}
+
+
 
 	/**
 	 * @return mixed

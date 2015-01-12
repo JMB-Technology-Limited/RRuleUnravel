@@ -3,7 +3,7 @@
 namespace JMBTechnologyLimited\RRuleUnravel;
 
 use JMBTechnologyLimited\RRuleUnravel\internal\MonthCalendarForDaysOfWeek;
-use JMBTechnologyLimited\RRuleUnravel\internal\RRuleUnravelling;
+use JMBTechnologyLimited\RRuleUnravel\internal\ICalDataUnravelling;
 
 
 /**
@@ -16,27 +16,16 @@ use JMBTechnologyLimited\RRuleUnravel\internal\RRuleUnravelling;
 
 class Unraveler {
 
-	/** @var  RRuleUnravelling */
-	protected $rruleUnravelling;
-
-	/** @var  \DateTime */
-	protected $start;
-
-	/** @var  \DateTime */
-	protected $end;
-
-	protected $timezone;
+	/** @var  ICalDataUnravelling */
+	protected $icalDataUnravelling;
 
 	protected $includeOriginalEvent = true;
 
 	protected $results;
 
-	function __construct(RRule $rrule, \DateTime $start, \DateTime $end, $timezone='UTC')
+	function __construct(ICalData $ICalData)
 	{
-		$this->rruleUnravelling = new RRuleUnravelling($rrule);
-		$this->start = $start;
-		$this->end = $end;
-		$this->timezone = $timezone;
+		$this->icalDataUnravelling = new ICalDataUnravelling($ICalData);
 	}
 
 
@@ -48,15 +37,15 @@ class Unraveler {
 
 
 
-		if ($this->rruleUnravelling->getRrule()->getFreq() == "WEEKLY")
+		if ($this->icalDataUnravelling->getICalData()->getFreq() == "WEEKLY")
 		{
-			$this->stepBySimplePeriod("P".(7*$this->rruleUnravelling->getRrule()->getInterval())."D");
+			$this->stepBySimplePeriod("P".(7*$this->icalDataUnravelling->getICalData()->getInterval())."D");
 		}
-		else if ($this->rruleUnravelling->getRrule()->getFreq() == "MONTHLY" && $this->rruleUnravelling->getRrule()->isSetBymonthday())
+		else if ($this->icalDataUnravelling->getICalData()->getFreq() == "MONTHLY" && $this->icalDataUnravelling->getICalData()->isSetBymonthday())
 		{
 			$this->stepBySimplePeriod("P1M");
 		}
-		else if ($this->rruleUnravelling->getRrule()->getFreq() == "MONTHLY" && $this->rruleUnravelling->getRrule()->isSetByday())
+		else if ($this->icalDataUnravelling->getICalData()->getFreq() == "MONTHLY" && $this->icalDataUnravelling->getICalData()->isSetByday())
 		{
 			$this->stepByDayMonthlyPeriod();
 		}
@@ -66,14 +55,14 @@ class Unraveler {
 	protected function stepBySimplePeriod($intervalString) {
 		$interval = new \DateInterval($intervalString);
 
-		$start = clone $this->start;
-		if ($start->getTimezone()->getName() != $this->timezone) {
-			$start->setTimezone(new \DateTimeZone($this->timezone));
+		$start = clone $this->icalDataUnravelling->getICalData()->getStart();
+		if ($start->getTimezone()->getName() != $end = clone $this->icalDataUnravelling->getICalData()->getTimezone()) {
+			$start->setTimezone($this->icalDataUnravelling->getICalData()->getTimezone());
 		}
 
-		$end = clone $this->end;
-		if ($end->getTimezone()->getName() != $this->timezone) {
-			$end->setTimezone(new \DateTimeZone($this->timezone));
+		$end = clone $this->icalDataUnravelling->getICalData()->getEnd();
+		if ($end->getTimezone()->getName() != $this->icalDataUnravelling->getICalData()->getTimezone()) {
+			$end->setTimezone($this->icalDataUnravelling->getICalData()->getTimezone());
 		}
 
 		if ($this->includeOriginalEvent) {
@@ -88,7 +77,7 @@ class Unraveler {
 			$end->add($interval);
 
 			$add = true;
-			if (!$this->rruleUnravelling->isCountLeft()) {
+			if (!$this->icalDataUnravelling->isCountLeft()) {
 				$add = false;
 				// can also stop processing now
 				$process = false;
@@ -97,7 +86,7 @@ class Unraveler {
 			if ($add)
 			{
 				$this->results[] = new UnravelerResult(clone $start, clone $end);
-				$this->rruleUnravelling->decreaseCount();
+				$this->icalDataUnravelling->decreaseCount();
 			}
 
 			// This is a temporary stop for rules with no count, so they stop sometime.
@@ -115,14 +104,14 @@ class Unraveler {
 		$interval = new \DateInterval("P1D");
 
 
-		$start = clone $this->start;
-		if ($start->getTimezone()->getName() != $this->timezone) {
-			$start->setTimezone(new \DateTimeZone($this->timezone));
+		$start = clone $this->icalDataUnravelling->getICalData()->getStart();
+		if ($start->getTimezone()->getName() != $this->icalDataUnravelling->getICalData()->getTimezone()) {
+			$start->setTimezone($this->icalDataUnravelling->getICalData()->getTimezone());
 		}
 
-		$end = clone $this->end;
-		if ($end->getTimezone()->getName() != $this->timezone) {
-			$end->setTimezone(new \DateTimeZone($this->timezone));
+		$end = clone $this->icalDataUnravelling->getICalData()->getEnd();
+		if ($end->getTimezone()->getName() != $this->icalDataUnravelling->getICalData()->getTimezone()) {
+			$end->setTimezone($this->icalDataUnravelling->getICalData()->getTimezone());
 		}
 
 		if ($this->includeOriginalEvent) {
@@ -148,31 +137,31 @@ class Unraveler {
 						$add = false;
 
 						if ($monthCalendar->getDay($i) == "Mon") {
-							if ($this->rruleUnravelling->getRrule()->isByDayMon() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayMonNumber())) {
+							if ($this->icalDataUnravelling->getICalData()->isByDayMon() && $monthCalendar->isDayNumber($i, $this->icalDataUnravelling->getICalData()->getByDayMonNumber())) {
 								$add = true;
 							}
 						} else if ($monthCalendar->getDay($i) == "Tue") {
-							if ($this->rruleUnravelling->getRrule()->isByDayTue() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayTueNumber())) {
+							if ($this->icalDataUnravelling->getICalData()->isByDayTue() && $monthCalendar->isDayNumber($i, $this->icalDataUnravelling->getICalData()->getByDayTueNumber())) {
 								$add = true;
 							}
 						} else if ($monthCalendar->getDay($i) == "Wed") {
-							if ($this->rruleUnravelling->getRrule()->isByDayWed() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayWedNumber())) {
+							if ($this->icalDataUnravelling->getICalData()->isByDayWed() && $monthCalendar->isDayNumber($i, $this->icalDataUnravelling->getICalData()->getByDayWedNumber())) {
 								$add = true;
 							}
 						} else if ($monthCalendar->getDay($i) == "Thu") {
-							if ($this->rruleUnravelling->getRrule()->isByDayThu() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayThuNumber())) {
+							if ($this->icalDataUnravelling->getICalData()->isByDayThu() && $monthCalendar->isDayNumber($i, $this->icalDataUnravelling->getICalData()->getByDayThuNumber())) {
 								$add = true;
 							}
 						} else if ($monthCalendar->getDay($i) == "Fri") {
-							if ($this->rruleUnravelling->getRrule()->isByDayFri() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDayFriNumber())) {
+							if ($this->icalDataUnravelling->getICalData()->isByDayFri() && $monthCalendar->isDayNumber($i, $this->icalDataUnravelling->getICalData()->getByDayFriNumber())) {
 								$add = true;
 							}
 						} else if ($monthCalendar->getDay($i) == "Sat") {
-							if ($this->rruleUnravelling->getRrule()->isByDaySat() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDaySatNumber())) {
+							if ($this->icalDataUnravelling->getICalData()->isByDaySat() && $monthCalendar->isDayNumber($i, $this->icalDataUnravelling->getICalData()->getByDaySatNumber())) {
 								$add = true;
 							}
 						} else if ($monthCalendar->getDay($i) == "Sun") {
-							if ($this->rruleUnravelling->getRrule()->isByDaySun() && $monthCalendar->isDayNumber($i, $this->rruleUnravelling->getRrule()->getByDaySunNumber())) {
+							if ($this->icalDataUnravelling->getICalData()->isByDaySun() && $monthCalendar->isDayNumber($i, $this->icalDataUnravelling->getICalData()->getByDaySunNumber())) {
 								$add = true;
 							}
 						}
@@ -180,10 +169,10 @@ class Unraveler {
 						if ($add && $process) {
 
 							$this->results[] = new UnravelerResult($monthCalendar->getStart($i), $monthCalendar->getEnd($i));
-							$this->rruleUnravelling->decreaseCount();
+							$this->icalDataUnravelling->decreaseCount();
 
 
-							if (!$this->rruleUnravelling->isCountLeft()) {
+							if (!$this->icalDataUnravelling->isCountLeft()) {
 								$add = false;
 								// can also stop processing now
 								$process = false;

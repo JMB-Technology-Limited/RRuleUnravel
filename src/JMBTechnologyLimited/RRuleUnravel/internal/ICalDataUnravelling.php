@@ -2,7 +2,7 @@
 
 namespace JMBTechnologyLimited\RRuleUnravel\internal;
 
-use JMBTechnologyLimited\RRuleUnravel\RRule;
+use JMBTechnologyLimited\RRuleUnravel\ICalData;
 
 /**
  *
@@ -12,7 +12,7 @@ use JMBTechnologyLimited\RRuleUnravel\RRule;
  * @author James Baster <james@jarofgreen.co.uk>
  */
 
-class RRuleUnravelling {
+class ICalDataUnravelling {
 
 
 
@@ -20,21 +20,21 @@ class RRuleUnravelling {
 	protected $count = -1;
 
 
-	/** @var  RRule */
-	protected $rrule;
+	/** @var  ICalData */
+	protected $icaldata;
 
-	function __construct(RRule $rrule)
+	function __construct(ICalData $ICalData)
 	{
-		$this->rrule = $rrule;
-		$this->count = $rrule->getCount();
+		$this->icaldata = $ICalData;
+		$this->count = $ICalData->getCount();
 	}
 
 	/**
-	 * @return \JMBTechnologyLimited\RRuleUnravel\RRule
+	 * @return \JMBTechnologyLimited\RRuleUnravel\ICalData
 	 */
-	public function getRrule()
+	public function getICalData()
 	{
-		return $this->rrule;
+		return $this->icaldata;
 	}
 
 	/**
