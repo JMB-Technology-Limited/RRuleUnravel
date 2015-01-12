@@ -188,6 +188,58 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * This came from Google Calendar.
+	 * Sometimes they put in the BYDAY, sometimes they don't. No idea why,
+	 */
+	function testTwoWeeksPeriod() {
+		$rrule = new RRule("FREQ=WEEKLY;INTERVAL=2;BYDAY=TH");
+		$unraveler = new Unraveler($rrule,
+			new \DateTime("2015-02-12 09:00:00", new \DateTimeZone("UTC")),
+			new \DateTime("2015-02-12 10:00:00", new \DateTimeZone("UTC")), "Europe/London");
+		$unraveler->setIncludeOriginalEvent(false);
+		$unraveler->process();
+		$results = $unraveler->getResults();
+
+		$this->assertTrue(count($results) > 5);
+
+		$this->assertEquals("2015-02-26T09:00:00+00:00", $results[0]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-02-26T10:00:00+00:00", $results[0]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-02-26T09:00:00+00:00", $results[0]->getStart()->format("c"));
+		$this->assertEquals("2015-02-26T10:00:00+00:00", $results[0]->getEnd()->format("c"));
+
+
+		$this->assertEquals("2015-03-12T09:00:00+00:00", $results[1]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-03-12T10:00:00+00:00", $results[1]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-03-12T09:00:00+00:00", $results[1]->getStart()->format("c"));
+		$this->assertEquals("2015-03-12T10:00:00+00:00", $results[1]->getEnd()->format("c"));
+
+		$this->assertEquals("2015-03-26T09:00:00+00:00", $results[2]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-03-26T10:00:00+00:00", $results[2]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-03-26T09:00:00+00:00", $results[2]->getStart()->format("c"));
+		$this->assertEquals("2015-03-26T10:00:00+00:00", $results[2]->getEnd()->format("c"));
+
+		// BST date shift
+
+		$this->assertEquals("2015-04-09T08:00:00+00:00", $results[3]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-04-09T09:00:00+00:00", $results[3]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-04-09T09:00:00+01:00", $results[3]->getStart()->format("c"));
+		$this->assertEquals("2015-04-09T10:00:00+01:00", $results[3]->getEnd()->format("c"));
+
+
+		$this->assertEquals("2015-04-23T08:00:00+00:00", $results[4]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-04-23T09:00:00+00:00", $results[4]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-04-23T09:00:00+01:00", $results[4]->getStart()->format("c"));
+		$this->assertEquals("2015-04-23T10:00:00+01:00", $results[4]->getEnd()->format("c"));
+
+
+	}
+
 }
 
 

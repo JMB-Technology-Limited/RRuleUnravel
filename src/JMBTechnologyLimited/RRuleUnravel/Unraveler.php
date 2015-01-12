@@ -50,7 +50,7 @@ class Unraveler {
 
 		if ($this->rruleUnravelling->getRrule()->getFreq() == "WEEKLY")
 		{
-			$this->stepBySimplePeriod("P7D");
+			$this->stepBySimplePeriod("P".(7*$this->rruleUnravelling->getRrule()->getInterval())."D");
 		}
 		else if ($this->rruleUnravelling->getRrule()->getFreq() == "MONTHLY" && $this->rruleUnravelling->getRrule()->isSetBymonthday())
 		{

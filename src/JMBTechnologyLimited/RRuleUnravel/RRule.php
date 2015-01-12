@@ -52,6 +52,8 @@ class RRule {
 
 	protected $bymonthday;
 
+	protected $interval = 1;
+
 
 	function __construct($data = null)
 	{
@@ -116,6 +118,10 @@ class RRule {
 			else if ($key == 'COUNT')
 			{
 				$this->count = $value;
+			}
+			else if ($key == 'INTERVAL')
+			{
+				$this->interval = intval($value);
 			}
 			else if ($key == 'BYMONTHDAY')
 			{
@@ -320,6 +326,14 @@ class RRule {
 	public function isSetBymonthday()
 	{
 		return (boolean)$this->bymonthday;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getInterval()
+	{
+		return $this->interval;
 	}
 
 
