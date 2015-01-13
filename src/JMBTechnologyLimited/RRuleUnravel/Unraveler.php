@@ -210,11 +210,12 @@ class Unraveler {
 	}
 
 	protected function  addResult(\DateTime $start, \DateTime $end) {
+		
 		foreach($this->icalDataUnravelling->getICalData()->getExcluded() as $excluded) {
-			if ($start->getTimezone()->getName() != $excluded->getTimezone()->getName()) {
+			if ($start->getTimezone()->getName() != $excluded['datetime']->getTimezone()->getName()) {
 				// TODOD
 			} else {
-				if ($excluded->format("c") == $start->format("c")) {
+				if ($excluded['datetime']->format("c") == $start->format("c")) {
 					return;
 				}
 			}

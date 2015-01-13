@@ -160,7 +160,7 @@ class ICalData {
 
 		foreach(explode(",",$exdtval) as $exdtvalBit) {
 			if ($exdtvalBit) {
-				$this->excluded[] = new \DateTime($exdtvalBit, $timezone);
+				$this->excluded[] = array('datetime'=>new \DateTime($exdtvalBit, $timezone));
 			}
 		}
 
