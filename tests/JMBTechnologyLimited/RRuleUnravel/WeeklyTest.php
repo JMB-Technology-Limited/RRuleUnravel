@@ -250,7 +250,7 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 			new \DateTime("2015-02-12 10:00:00", new \DateTimeZone("UTC")),
 			"FREQ=WEEKLY;INTERVAL=2;BYDAY=TH",
 			"Europe/London");
-		$icaldata->setExDateByString("20150226T090000","TZID=Europe/London");
+		$icaldata->addExDateByString("20150226T090000","TZID=Europe/London");
 		$unraveler = new Unraveler($icaldata);
 		$unraveler->setIncludeOriginalEvent(false);
 		$unraveler->process();

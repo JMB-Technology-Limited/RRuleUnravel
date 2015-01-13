@@ -145,9 +145,7 @@ class ICalData {
 	}
 
 
-	public function setExDateByString($exdtval, $exdtparam = "") {
-
-		$this->excluded = array();
+	public function addExDateByString($exdtval, $exdtparam = "") {
 
 		$timezone = new \DateTimeZone("UTC");
 
