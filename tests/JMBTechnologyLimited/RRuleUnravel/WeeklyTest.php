@@ -287,6 +287,38 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 
 
 	}
+	function testWeeklyUntil() {
+		$icaldata = new ICalData(
+			new \DateTime("2015-02-02 09:00:00", new \DateTimeZone("UTC")),
+			new \DateTime("2015-02-02 10:00:00", new \DateTimeZone("UTC")),
+			"FREQ=WEEKLY;UNTIL=20150216T090000Z;BYDAY=MO",
+			"Europe/London");
+		$unraveler = new Unraveler($icaldata);
+		$unraveler->setIncludeOriginalEvent(true);
+		$unraveler->process();
+		$results = $unraveler->getResults();
+
+		$this->assertTrue(count($results) == 3);
+
+		$this->assertEquals("2015-02-02T09:00:00+00:00", $results[0]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-02-02T10:00:00+00:00", $results[0]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-02-02T09:00:00+00:00", $results[0]->getStart()->format("c"));
+		$this->assertEquals("2015-02-02T10:00:00+00:00", $results[0]->getEnd()->format("c"));
+
+		$this->assertEquals("2015-02-09T09:00:00+00:00", $results[1]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-02-09T10:00:00+00:00", $results[1]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-02-09T09:00:00+00:00", $results[1]->getStart()->format("c"));
+		$this->assertEquals("2015-02-09T10:00:00+00:00", $results[1]->getEnd()->format("c"));
+
+		$this->assertEquals("2015-02-16T09:00:00+00:00", $results[2]->getStartInUTC()->format("c"));
+		$this->assertEquals("2015-02-16T10:00:00+00:00", $results[2]->getEndInUTC()->format("c"));
+
+		$this->assertEquals("2015-02-16T09:00:00+00:00", $results[2]->getStart()->format("c"));
+		$this->assertEquals("2015-02-16T10:00:00+00:00", $results[2]->getEnd()->format("c"));
+
+	}
 
 }
 

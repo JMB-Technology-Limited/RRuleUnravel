@@ -81,6 +81,9 @@ class Unraveler {
 				$add = false;
 				// can also stop processing now
 				$process = false;
+			} else if ($this->icalDataUnravelling->getICalData()->hasUntil() && $start > $this->icalDataUnravelling->getICalData()->getUntil()) {
+				// it's inclusive, so we add this one but no mare
+				$process = false;
 			}
 
 			if ($add)
@@ -90,8 +93,10 @@ class Unraveler {
 			}
 
 			// This is a temporary stop for rules with no count, so they stop sometime.
+			// Also > 2100 just as a safety to stop run away loops!
 			// Need to do better!
-			if (count($this->results) > 100)
+
+			if (count($this->results) > 100 || $start->format("Y") > 2100)
 			{
 				$process = false;
 			}
@@ -176,10 +181,15 @@ class Unraveler {
 								$add = false;
 								// can also stop processing now
 								$process = false;
+							// TODO add below, with tests!
+							//} else if ($this->icalDataUnravelling->getICalData()->hasUntil() && $start > $this->icalDataUnravelling->getICalData()->getUntil()) {
+								// it's inclusive, so we add this one but no mare
+							//	$process = false;
 							}
 							// This is a temporary stop for rules with no count, so they stop sometime.
 							// Need to do better!
-							if (count($this->results) > 100)
+							// Also > 2100 just as a safety to stop run away loops!
+							if (count($this->results) > 100 || $start->format("Y") > 2100)
 							{
 								$process = false;
 							}
@@ -210,7 +220,11 @@ class Unraveler {
 	}
 
 	protected function  addResult(\DateTime $start, \DateTime $end) {
-		
+
+		if ($this->icalDataUnravelling->getICalData()->hasUntil() && $start > $this->icalDataUnravelling->getICalData()->getUntil()) {
+			return;
+		}
+
 		foreach($this->icalDataUnravelling->getICalData()->getExcluded() as $excluded) {
 			if ($start->getTimezone()->getName() != $excluded['datetime']->getTimezone()->getName()) {
 				// TODOD

@@ -65,6 +65,9 @@ class ICalData {
 
 	protected $excluded = array();
 
+	/** @var  \DateTime */
+	protected $until;
+
 	function __construct(\DateTime $start = null, \DateTime $end = null, $data = null, $timezone = null)
 	{
 		$this->start = $start;
@@ -139,6 +142,10 @@ class ICalData {
 			else if ($key == 'BYMONTHDAY')
 			{
 				$this->bymonthday = $value;
+			}
+			else if ($key == 'UNTIL')
+			{
+				$this->until = new \DateTime($value, $this->timezone);
 			}
 		}
 
@@ -422,6 +429,24 @@ class ICalData {
 		return $this->interval;
 	}
 
+
+
+	/**
+	 * @return boolean
+	 */
+	public function hasUntil()
+	{
+		return (boolean)$this->until;
+	}
+
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getUntil()
+	{
+		return $this->until;
+	}
 
 
 }
