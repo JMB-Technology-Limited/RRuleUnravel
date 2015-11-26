@@ -1,6 +1,8 @@
 <?php
 
 
+error_reporting( E_STRICT );
+
 /**
  *
  * @link https://github.com/JMB-Technology-Limited/RRuleUnravel
