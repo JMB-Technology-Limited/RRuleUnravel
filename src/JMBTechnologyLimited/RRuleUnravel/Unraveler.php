@@ -23,11 +23,27 @@ class Unraveler {
 
 	protected $results;
 
+    protected $resultFilters = array();
+
+
+    protected $resultsCountLimit = 100;
+
 	function __construct(ICalData $ICalData)
 	{
 		$this->icalDataUnravelling = new ICalDataUnravelling($ICalData);
 	}
 
+    public function addResultFilter(ResultFilterInterface $resultFilterInterface) {
+        $this->resultFilters[] = $resultFilterInterface;
+    }
+
+    /**
+     * @param int $resultsCountLimit
+     */
+    public function setResultsCountLimit($resultsCountLimit)
+    {
+        $this->resultsCountLimit = $resultsCountLimit;
+    }
 
 	public function process()
 	{
@@ -96,7 +112,7 @@ class Unraveler {
 			// Also > 2100 just as a safety to stop run away loops!
 			// Need to do better!
 
-			if (count($this->results) > 100 || $start->format("Y") > 2100)
+			if (count($this->results) > $this->resultsCountLimit || $start->format("Y") > 2100)
 			{
 				$process = false;
 			}
@@ -189,7 +205,7 @@ class Unraveler {
 							// This is a temporary stop for rules with no count, so they stop sometime.
 							// Need to do better!
 							// Also > 2100 just as a safety to stop run away loops!
-							if (count($this->results) > 100 || $start->format("Y") > 2100)
+							if (count($this->results) > $this->resultsCountLimit || $start->format("Y") > 2100)
 							{
 								$process = false;
 							}
@@ -221,6 +237,10 @@ class Unraveler {
 
 	protected function  addResult(\DateTime $start, \DateTime $end) {
 
+        if (count($this->results) >= $this->resultsCountLimit) {
+            return;
+        }
+
 		if ($this->icalDataUnravelling->getICalData()->hasUntil() && $start > $this->icalDataUnravelling->getICalData()->getUntil()) {
 			return;
 		}
@@ -234,6 +254,14 @@ class Unraveler {
 				}
 			}
 		}
+
+        foreach($this->resultFilters as $resultFilter) {
+            $result = $resultFilter->process($this->icalDataUnravelling->getICalData(), clone $start, clone $end);
+            if (!$result->getProcess()) {
+                return;
+            }
+        }
+
 		$this->results[] = new UnravelerResult(clone $start, clone $end);
 	}
 
