@@ -298,7 +298,7 @@ class WeeklyTest extends \PHPUnit_Framework_TestCase {
 		$unraveler->process();
 		$results = $unraveler->getResults();
 
-		$this->assertTrue(count($results) == 3);
+		$this->assertEquals(3, count($results));
 
 		$this->assertEquals("2015-02-02T09:00:00+00:00", $results[0]->getStartInUTC()->format("c"));
 		$this->assertEquals("2015-02-02T10:00:00+00:00", $results[0]->getEndInUTC()->format("c"));
