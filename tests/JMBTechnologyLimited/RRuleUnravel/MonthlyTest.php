@@ -102,6 +102,36 @@ class MonthlyTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+    function testUntil1() {
+        $icalData = new ICalData(
+            new \DateTime("2014-11-19 08:00:00", new \DateTimeZone("Europe/London")),
+            new \DateTime("2014-11-19 08:00:00", new \DateTimeZone("Europe/London")),
+            "FREQ=MONTHLY;BYDAY=3WE;UNTIL=2015026T090000Z",
+            "Europe/London");
+        $this->assertTrue($icalData->isSetByday());
+        $this->assertFalse($icalData->isByDayMon());
+        $this->assertFalse($icalData->isByDayTue());
+        $this->assertTrue($icalData->isByDayWed());
+        $this->assertEquals(3, $icalData->getByDayWedNumber());
+        $this->assertFalse($icalData->isByDayThu());
+        $this->assertFalse($icalData->isByDayFri());
+        $this->assertFalse($icalData->isByDaySat());
+        $this->assertFalse($icalData->isByDaySun());
+        $unraveler = new Unraveler($icalData);
+        $unraveler->setIncludeOriginalEvent(false);
+        $unraveler->process();
+        $results = $unraveler->getResults();
+
+        $this->assertEquals(2, count($results));
+
+
+        $this->assertEquals("2014-12-17T08:00:00+00:00", $results[0]->getStart()->format("c"));
+        $this->assertEquals("2014-12-17T08:00:00+00:00", $results[0]->getEnd()->format("c"));
+
+        $this->assertEquals("2015-01-21T08:00:00+00:00", $results[1]->getStartInUTC()->format("c"));
+        $this->assertEquals("2015-01-21T08:00:00+00:00", $results[1]->getEndInUTC()->format("c"));
+
+    }
 
 
 }

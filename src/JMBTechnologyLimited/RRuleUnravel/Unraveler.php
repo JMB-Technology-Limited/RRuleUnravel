@@ -194,13 +194,11 @@ class Unraveler {
 
 
 							if (!$this->icalDataUnravelling->isCountLeft()) {
-								$add = false;
-								// can also stop processing now
+								// no more count, so stop processing
 								$process = false;
-							// TODO add below, with tests!
-							//} else if ($this->icalDataUnravelling->getICalData()->hasUntil() && $start > $this->icalDataUnravelling->getICalData()->getUntil()) {
-								// it's inclusive, so we add this one but no mare
-							//	$process = false;
+							} else if ($this->icalDataUnravelling->getICalData()->hasUntil() && $start > $this->icalDataUnravelling->getICalData()->getUntil()) {
+								// now after until date, no point carrying on.
+							    $process = false;
 							}
 							// This is a temporary stop for rules with no count, so they stop sometime.
 							// Need to do better!
