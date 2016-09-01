@@ -33,6 +33,9 @@ class Unraveler {
 		$this->icalDataUnravelling = new ICalDataUnravelling($ICalData);
 	}
 
+	/**
+	 * See ResultFilterInterface class for notes on this.
+	 **/
     public function addResultFilter(ResultFilterInterface $resultFilterInterface) {
         $this->resultFilters[] = $resultFilterInterface;
     }

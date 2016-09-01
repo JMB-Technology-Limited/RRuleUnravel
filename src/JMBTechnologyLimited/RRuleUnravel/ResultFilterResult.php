@@ -12,6 +12,9 @@ namespace JMBTechnologyLimited\RRuleUnravel;
 
 class ResultFilterResult {
 
+    /**
+     * @var boolean
+     */
     protected $process;
 
     function __construct($process)
@@ -20,7 +23,7 @@ class ResultFilterResult {
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function getProcess()
     {
